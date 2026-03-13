@@ -4,10 +4,13 @@
 mkdir ~/Developer/local-ai && cd ~/Developer/local-ai
 python3 -m venv .venv
 source .venv/bin/activate
-pip install mlx-lm
+pip install mlx-lm PySide6
 
 ## Activate venv (every new terminal session)
 cd ~/Developer/local-ai && source .venv/bin/activate
+
+## GUI (model manager)
+./run-gui.sh   # or: python gui.py
 
 ## Models
 
