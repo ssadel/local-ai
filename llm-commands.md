@@ -9,26 +9,36 @@ pip install mlx-lm
 ## Activate venv (every new terminal session)
 cd ~/Developer/local-ai && source .venv/bin/activate
 
-## 30B model (17.2GB)
+## Models
+
+### Qwen3-Coder-30B — fast coding, lightweight (17.2GB)
 mlx_lm.server --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit --port 8765
 
-## Coder-Next (the bigger one)
+### Qwen3-Coder-Next — fast coding, heavier (~46GB, tight on 64GB)
 mlx_lm.server --model mlx-community/Qwen3-Coder-Next-4bit --port 8765
 
-## Start reasoning model (slower, smarter)
+### DeepSeek-R1-32B — reasoning model, slower but smarter (18.4GB)
 mlx_lm.server --model mlx-community/DeepSeek-R1-Distill-Qwen-32B-4bit --port 8765
 
-## Quick test a model from terminal
-mlx_lm.generate --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit --prompt "hello"
-
 ## Pre-download a model without running it
-pip install huggingface_hub
-huggingface-cli download mlx-community/Qwen3-Coder-Next-4bit
-huggingface-cli download mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit
-huggingface-cli download mlx-community/DeepSeek-R1-Distill-Qwen-32B-4bit
+# Just start the server — it auto-downloads on first run then Ctrl+C.
+# Or:
+python -c "from huggingface_hub import snapshot_download; snapshot_download('mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit')"
 
-## API endpoints (point Claude Code here)
-# MLX server: http://localhost:8765/v1
+## If downloads are slow
+pip uninstall hf-xet -y
+HF_HUB_ENABLE_HF_TRANSFER=1 mlx_lm.server --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit --port 8765
+
+## HuggingFace login (for faster downloads)
+python -c "from huggingface_hub import login; login(token='hf_your_token_here')"
+
+## API endpoint (point Claude Code here)
+# http://localhost:8765/v1
+
+## Test a model
+curl http://localhost:8765/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit", "max_tokens": 4096, "stream": true, "messages": [{"role": "user", "content": "hello"}]}'
 
 ## Kill the server
 # Ctrl+C in the terminal running it
@@ -41,3 +51,6 @@ ls ~/.cache/huggingface/hub/
 
 ## Delete a cached model
 rm -rf ~/.cache/huggingface/hub/models--mlx-community--MODEL-NAME
+
+## Models are stored in ~/.cache/huggingface/hub/ (separate from venv)
+## Deleting venv does NOT delete models
