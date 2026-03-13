@@ -37,7 +37,7 @@ huggingface-cli download mlx-community/DeepSeek-R1-Distill-Qwen-32B-4bit
 memory_pressure
 
 ## List cached models
-ls ~/.cache/huggingface/hub/models--mlx-community--*
+ls ~/.cache/huggingface/hub/
 
 ## Delete a cached model
 rm -rf ~/.cache/huggingface/hub/models--mlx-community--MODEL-NAME
